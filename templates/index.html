@@ -107,36 +107,56 @@
     </div>
 
     <script>
-        function handleKeyPress(event) {
-            if (event.key === "Enter") sendMessage();
+        async function loadHistory() {
+            let chatbox = document.getElementById("chatbox");
+    
+            let response = await fetch("/chat_history");  // New API endpoint
+            let history = await response.json();
+    
+            history.forEach(msg => {
+                let roleClass = msg.role === "user" ? "user" : "bot";
+                chatbox.innerHTML += `<div class="message ${roleClass}"><strong>${msg.role}:</strong> ${msg.content}</div>`;
+            });
+    
+            chatbox.scrollTop = chatbox.scrollHeight;
         }
-
+    
         async function sendMessage() {
             let inputField = document.getElementById("userInput");
             let userMessage = inputField.value.trim();
             let chatbox = document.getElementById("chatbox");
-
+    
             if (userMessage === "") return;
-
+    
             // Display user message
             chatbox.innerHTML += `<div class="message user"><strong>You:</strong> ${userMessage}</div>`;
-
+    
             // Send message to backend
             let response = await fetch("/chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: userMessage }),
             });
-
+    
             let data = await response.json();
-            let botMessage = data.reply; // ✅ Fix response key
-
+            let botMessage = data.reply;
+    
             // Display bot response
-            chatbox.innerHTML += `<div class="message bot"><strong>Noa:</strong> ${botMessage}</div>`;
+            chatbox.innerHTML += `<div class="message bot"><strong>Bot:</strong> ${botMessage}</div>`;
             chatbox.scrollTop = chatbox.scrollHeight;
             inputField.value = "";
         }
+    
+        function handleKeyPress(event) {
+            if (event.key === "Enter") {
+                sendMessage();
+            }
+        }
+    
+        // Load history on page load
+        window.onload = loadHistory;
     </script>
+    
 
 </body>
 </html>
