@@ -78,11 +78,26 @@ def chat():
     messages.append({"role": "assistant", "content": bot_response})
     save_message("assistant", bot_response)
 
-    # Keep only the last 10 messages in memory (for performance)
+    # ✅ Keep only the last 10 messages in memory (excluding system prompt)
     if len(messages) > 20:
-        messages.pop(1)  # Remove oldest message except system prompt
+        messages.pop(1)
+
+    # ✅ Trim CSV file to keep only the last 10 conversations
+    trim_csv_history()
 
     return jsonify({"reply": bot_response})
+
+# ✅ Function to trim chat history in CSV file
+def trim_csv_history():
+    """Keeps only the last 10 messages in the CSV file"""
+    if os.path.exists(CHAT_HISTORY_FILE):
+        with open(CHAT_HISTORY_FILE, "r", newline="", encoding="utf-8") as file:
+            lines = file.readlines()
+
+        # Keep only the last 20 lines (10 user + 10 bot messages)
+        with open(CHAT_HISTORY_FILE, "w", newline="", encoding="utf-8") as file:
+            file.writelines(lines[-20:])
+
 
 # ✅ New Route: Fetch Chat History for the Frontend
 @app.route('/chat_history', methods=['GET'])
@@ -97,6 +112,17 @@ def get_chat_history():
                     chat_history.append({"role": row[0], "content": row[1]})
 
     return jsonify(chat_history)
+
+@app.route('/clear_chat', methods=['POST'])
+def clear_chat():
+    """Clears chat history from memory and CSV"""
+    global messages
+    messages = [{"role": "system", "content": "You are a helpful AI assistant."}]
+
+    # Clear CSV file
+    open(CHAT_HISTORY_FILE, "w").close()
+    
+    return jsonify({"status": "Chat history cleared!"})
 
 # Start Flask server
 if __name__ == '__main__':
