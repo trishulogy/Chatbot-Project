@@ -1,20 +1,20 @@
-user,how have you been
-assistant,"I've been doing well, thank you for asking!  As a large language model, I don't experience emotions or feelings in the same way humans do, but I'm functioning optimally and ready to assist you.  How have you been?
+* **The Reserve Bank of India (RBI) website:** Check their publications and data sections.
+* **Major financial news websites (e.g., Bloomberg, Reuters, Moneycontrol, Livemint):** These sites usually have real-time market data, including bond yields.
+
+
+Remember that even these sources might show slightly different numbers due to variations in data collection and reporting.
 "
-user,ok so what are the 7 wonders of the world
-assistant,"The ""Seven Wonders of the Ancient World"" are:
-
-1. **The Great Pyramid of Giza (Egypt):** The only remaining wonder of the ancient world.
-2. **The Hanging Gardens of Babylon (present-day Iraq):** Their existence is debated by historians.
-3. **The Statue of Zeus at Olympia (Greece):** A massive seated sculpture of the Greek god.
-4. **The Temple of Artemis at Ephesus (present-day Turkey):** Dedicated to the Greek goddess Artemis.
-5. **The Mausoleum at Halicarnassus (present-day Turkey):** An elaborate tomb.
-6. **The Colossus of Rhodes (Greece):** A gigantic bronze statue of the sun god Helios.
-7. **The Lighthouse of Alexandria (Egypt):** A towering lighthouse.
-
-
-It's important to note that only the Great Pyramid of Giza still stands today.  There are also many modern lists of ""Seven Wonders,"" such as the New7Wonders of the World, which are a different set of structures.
+user,whats the first q?
+assistant,"The first question was: ""What is the risk-free rate in India?""
 "
-user,good good
-assistant,"Great! Is there anything else I can help you with today?
+user,can you generate picture
+assistant,"I can't generate pictures. I am a text-based AI and don't have the capability to create or process images.  To generate a picture, you would need to use an image generation tool or program like:
+
+* **Midjourney:** Creates images from text prompts.
+* **DALL-E 2 (OpenAI):**  Similar to Midjourney.
+* **Stable Diffusion:** An open-source image generation model.
+* **Various online image generators:** Many websites offer free or paid image generation services.
+
+
+You would provide a text description of the image you want, and the tool would generate it.
 "

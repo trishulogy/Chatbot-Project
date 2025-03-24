@@ -43,27 +43,7 @@ body {
   max-width: 60%;
   word-wrap: break-word;
   font-size: 18px;
-  line-height: 1.5; /* Better spacing */
 }
-
-/* Bot messages */
-.bot {
-  background: #444654;
-  align-self: flex-start;
-  text-align: left;
-  color: #ffffff;
-}
-
-/* Ensure lists inside messages look good */
-.message ul {
-  padding-left: 20px;
-  margin: 10px 0;
-}
-
-.message ul li {
-  margin-bottom: 5px;
-}
-
 
 .user {
   background: #FFFFE3;

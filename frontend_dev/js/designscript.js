@@ -15,37 +15,22 @@ async function sendMessage() {
   inputField.value = "";
   chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll down
 
-  // Show "Typing..." message while waiting
-  let typingIndicator = document.createElement("div");
-  typingIndicator.classList.add("message", "bot");
-  typingIndicator.innerHTML = "<strong>Bot:</strong> Typing...";
-  chatbox.appendChild(typingIndicator);
-  chatbox.scrollTop = chatbox.scrollHeight;
+  // Send message to backend
+  let response = await fetch("/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: userMessage }),
+  });
 
-  try {
-      // Send message to backend
-      let response = await fetch("/chat", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: userMessage }),
-      });
+  let data = await response.json();
 
-      let data = await response.json();
-
-      // Remove "Typing..." message
-      chatbox.removeChild(typingIndicator);
-
-      // Display bot response
-      chatbox.innerHTML += `<div class="message bot">
-        <strong>Bot:</strong> ${formatMessage(data.reply)}
-      </div>`;
+  // Display bot response
+  chatbox.innerHTML += `<div class="message bot">
+    <strong>Bot:</strong> ${formatMessage(data.response)}
+</div>`;
 
 
-      chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll down
-  } catch (error) {
-      chatbox.removeChild(typingIndicator);
-      chatbox.innerHTML += `<div class="message bot"><strong>Bot:</strong> Error: Failed to get a response.</div>`;
-  }
+  chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll down
 }
 
 // Function to handle "Enter" key press
@@ -92,3 +77,5 @@ function formatMessage(text) {
 
   return text;
 }
+
+
