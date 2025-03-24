@@ -33,6 +33,14 @@ body {
   display: flex;
   flex-direction: column;
   font-size: 18px;
+  background: #252525; /* Default Dark Mode */
+  color: white;
+}
+
+/* ✅ Light Theme - Chatbox White Background */
+.light-theme #chatbox {
+  background: white;
+  color: black;
 }
 
 /* Messages */
@@ -45,12 +53,20 @@ body {
   font-size: 18px;
 }
 
+/* User Message - Default Dark Mode */
 .user {
   background: #FFFFE3;
   color: black;
   align-self: flex-end;
   text-align: right;
 }
+
+/* ✅ Light Theme - Change User Message to Blue */
+.light-theme .user {
+  background: #0073E6;
+  color: white;
+}
+
 
 .bot {
   background: #444654;
@@ -101,10 +117,11 @@ footer {
   left: 50%;
   transform: translateX(-50%);
   font-size: 12px; /* Small text */
-  color: #aaa; /* Light gray color */
+  color: #aaa; /* Light gray color in dark mode */
   text-align: center;
 }
 
+/* Footer Links */
 footer a {
   color: #0A84FF;
   text-decoration: none;
@@ -113,4 +130,79 @@ footer a {
 
 footer a:hover {
   text-decoration: underline;
+}
+
+/* ✅ Light Theme - Make Footer Text Darker */
+.light-theme footer {
+  color: #333; /* Darker text for visibility */
+}
+
+.light-theme footer a {
+  color: #0056b3; /* Darker blue for links */
+}
+
+
+/* Default Dark Theme */
+.dark-theme {
+  background-color: #1E1E1E;
+  color: white;
+}
+
+/* Light Theme */
+.light-theme {
+  background-color: white;
+  color: black;
+}
+
+/* ✅ Light Theme - Adjust Input & Buttons */
+.light-theme #input-area {
+  background: #f4f4f4;
+}
+
+.light-theme input {
+  background: white;
+  color: black;
+}
+
+.light-theme button {
+  background: #0073E6;
+  color: white;
+}
+
+.light-theme button:hover {
+  background: #005bb5;
+}
+
+/* Theme Button */
+#theme-toggle {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #444;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px;
+}
+
+/* SVG Styling */
+#theme-toggle svg, #theme-toggle img {
+  width: 30px;
+  height: 30px;
+  filter: invert(1); /* Makes the icon white in dark mode */
+}
+
+/* ✅ Light Theme - Theme Icon Light Grey */
+.light-theme #theme-toggle {
+  background: #ddd;
+}
+
+.light-theme #theme-toggle svg, .light-theme #theme-toggle img {
+  filter: invert(0.6); /* Makes the icon light grey */
 }

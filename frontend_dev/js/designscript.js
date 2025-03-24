@@ -79,3 +79,38 @@ function formatMessage(text) {
 }
 
 
+document.addEventListener("DOMContentLoaded", function () {
+  loadTheme();
+});
+
+// List of available themes
+const themes = ["dark-theme", "light-theme"];
+let currentThemeIndex = 0;
+
+// Function to toggle theme
+function toggleTheme() {
+  let body = document.body;
+
+  // Remove the current theme
+  body.classList.remove(...themes);
+
+  // Select the next theme in the list
+  currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+  let newTheme = themes[currentThemeIndex];
+
+  // Apply the new theme
+  body.classList.add(newTheme);
+
+  // Save the selected theme in localStorage
+  localStorage.setItem("theme", newTheme);
+}
+
+// Function to load the saved theme on page load
+function loadTheme() {
+  let savedTheme = localStorage.getItem("theme");
+  if (savedTheme && themes.includes(savedTheme)) {
+      document.body.classList.add(savedTheme);
+      currentThemeIndex = themes.indexOf(savedTheme);
+  }
+}
+
