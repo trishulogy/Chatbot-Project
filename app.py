@@ -39,21 +39,23 @@ def generate_response():
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
 
-        # Remove system role (Gemini does not support it)
-        formatted_messages = [
-            {"role": msg["role"], "parts": [{"text": msg["content"]}]} 
-            for msg in messages if msg["role"] in ["user", "assistant"]  # Exclude "system"
-        ]
+        # ✅ Convert messages into correct format (Remove 'system' role)
+        formatted_messages = []
+        for msg in messages:
+            if msg["role"] in ["user", "assistant"]:  # Ignore 'system'
+                formatted_messages.append({
+                    "role": msg["role"],
+                    "parts": [{"text": msg["content"]}]
+                })
 
         response = model.generate_content(formatted_messages, generation_config=genai.GenerationConfig(
-            max_output_tokens=100,
+            max_output_tokens=500,  # Increased token limit to prevent cut-off responses
             temperature=0.1,
         ))
 
-        return response.text  # Return the bot's response
+        return response.text  # ✅ Extract AI response properly
     except Exception as e:
         return f"Error: {e}"
-
 
 @app.route('/')
 def home():
@@ -73,6 +75,7 @@ def chat():
 
     # Generate bot response
     bot_response = generate_response()
+    print("AI Response:", bot_response)  # ✅ Debugging output
 
     # Add bot response to conversation history
     messages.append({"role": "assistant", "content": bot_response})
@@ -97,7 +100,6 @@ def trim_csv_history():
         # Keep only the last 20 lines (10 user + 10 bot messages)
         with open(CHAT_HISTORY_FILE, "w", newline="", encoding="utf-8") as file:
             file.writelines(lines[-20:])
-
 
 # ✅ New Route: Fetch Chat History for the Frontend
 @app.route('/chat_history', methods=['GET'])
