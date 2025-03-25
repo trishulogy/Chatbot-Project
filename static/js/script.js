@@ -92,21 +92,10 @@ async function clearChat() {
 
 // Function to format AI messages into structured HTML
 function formatMessage(text) {
-  // ✅ Convert markdown-style bold (**text**) to HTML bold (<strong>text</strong>)
+  // Preserve emojis and informal punctuation
   text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-  // ✅ Convert numbered lists into proper HTML lists
-  text = text.replace(/\n\d+\.\s/g, "<br>"); // Fixes numbering
-
-  // ✅ Convert bullet points ("- ") into `<ul><li>` lists
-  if (text.includes("- ")) {
-      let items = text.split("- ").filter(item => item.trim() !== "");
-      text = "<ul><li>" + items.join("</li><li>") + "</li></ul>";
-  }
-
-  // ✅ Convert new lines to `<br>` for spacing
+  text = text.replace(/(\w)'(\w)/g, "$1&rsquo;$2"); // Handle apostrophes
   text = text.replace(/\n/g, "<br>");
-
   return text;
 }
 

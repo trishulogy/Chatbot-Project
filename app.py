@@ -14,7 +14,8 @@ genai.configure(api_key=GENAI_API_KEY)
 CHAT_HISTORY_FILE = "chat_history.csv"
 
 # Initialize conversation history (system message + last 10 messages)
-messages = [{"role": "system", "content": "You are a helpful AI assistant."}]
+# Change the initial system message to encourage friendly responses
+messages = [{"role": "system", "content": "You are a friendly, helpful AI assistant named But. Your responses should be warm, conversational, and human-like. Use emojis occasionally, but don't overdo it. Keep responses concise but personable. Show interest in the user's life when appropriate."}]
 
 # Function to load chat history from CSV
 def load_chat_history():
@@ -39,24 +40,23 @@ def generate_response():
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
 
-        # ✅ Format messages correctly for Gemini API
         formatted_messages = []
         for msg in messages:
-            if msg["role"] in ["user", "assistant"]:  # Only keep valid roles
+            if msg["role"] in ["user", "assistant"]:
                 formatted_messages.append({
                     "role": msg["role"],
                     "parts": [{"text": msg["content"]}]
                 })
 
-        # ✅ Generate AI response
         response = model.generate_content(formatted_messages, generation_config=genai.GenerationConfig(
             max_output_tokens=500,
-            temperature=0.1,
+            temperature=0.7,  # Increased for more creative/less robotic responses
+            top_p=0.9,       # Allows for more diverse responses
         ))
 
-        return response.text  # ✅ Correctly return AI response
+        return response.text
     except Exception as e:
-        return f"Error: {e}"
+        return f"Oops! Something went wrong on my end. Could you try that again? 😊"
 
 
 @app.route('/')
