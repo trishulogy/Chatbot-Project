@@ -6,41 +6,71 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
+  height: auto;
   margin: 0;
+  overflow-y: auto; /* Enables vertical scrolling */
   transition: background 0.3s, color 0.3s;
+}
+
+/* Info Section (Above Chatbox) */
+#info-section {
+  text-align: center;
+  padding-top: 100px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 0px;
+  max-width: 800px;
+  margin: 0 auto;
+  min-height: 50vh; /* Ensures enough space before chatbox */
+}
+
+#info-section h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+#info-section p {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  color: #ccc; /* Slightly lighter text for readability */
+}
+
+/* Chat Section */
+#chat-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  padding-bottom: 50px; /* Ensures space at the bottom */
 }
 
 /* Chat Container */
 #chat-container {
   width: 60%;
-  height: 75%;
+  max-width: 900px; /* ✅ Prevents shrinking too much */
+  min-width: 400px; /* ✅ Ensures it doesn't get too narrow */
+  height: 600px; /* ✅ Fixed height */
   background: #252525;
   border-radius: 15px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.2);
-  margin-top: 50px;
   position: relative;
+  
 }
 
 /* Chatbox */
 #chatbox {
   flex-grow: 1;
   padding: 20px;
-  overflow-y: auto;
+  overflow-y: auto;  /* Enables scrolling */
   display: flex;
   flex-direction: column;
   font-size: 18px;
-  background: #252525; /* Default Dark Mode */
-  color: white;
-}
-
-/* ✅ Light Theme - Chatbox White Background */
-.light-theme #chatbox {
-  background: white;
-  color: black;
+  height: 500px; /* ✅ Fixed height */
+  max-height: 500px; /* ✅ Prevents expansion */
 }
 
 /* Messages */
@@ -51,27 +81,23 @@ body {
   max-width: 60%;
   word-wrap: break-word;
   font-size: 18px;
+  line-height: 1.5; /* Better spacing */
 }
 
-/* User Message - Default Dark Mode */
+/* Bot messages */
+.bot {
+  background: #444654;
+  align-self: flex-start;
+  text-align: left;
+  color: #ffffff;
+}
+
+/* User Messages */
 .user {
   background: #FFFFE3;
   color: black;
   align-self: flex-end;
   text-align: right;
-}
-
-/* ✅ Light Theme - Change User Message to Blue */
-.light-theme .user {
-  background: #0073E6;
-  color: white;
-}
-
-
-.bot {
-  background: #444654;
-  align-self: flex-start;
-  text-align: left;
 }
 
 /* Input Area */
@@ -80,8 +106,12 @@ body {
   padding: 15px;
   background: #1e1e1b;
   border-top: 1px solid #3A3A3A;
+  flex-direction: row; /* ✅ Make it horizontal again */
+  gap: 10px;
+  justify-content: space-between;
 }
 
+/* Input Field */
 input {
   flex: 1;
   padding: 15px;
@@ -92,11 +122,12 @@ input {
   background: #252525;
   color: white;
   border: 1px solid #3A3A3A;
+  width: 100%; /* ✅ Ensures proper width */
 }
 
+/* Buttons */
 button {
   padding: 15px 25px;
-  margin-left: 10px;
   border: none;
   border-radius: 8px;
   font-size: 18px;
@@ -104,105 +135,44 @@ button {
   background: #FFFFE3;
   color: black;
   transition: background 0.3s;
+  min-width: 120px; /* ✅ Ensures buttons don’t shrink */
 }
 
 button:hover {
   background: #E6E6B3;
 }
 
-/* Footer */
-footer {
-  position: fixed;
-  bottom: 10px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 12px; /* Small text */
-  color: #aaa; /* Light gray color in dark mode */
-  text-align: center;
+/* ✅ Responsive Design */
+@media screen and (max-width: 768px) {
+  #chat-container {
+    width: 90%;
+    height: 500px; /* ✅ Smaller chatbox for mobile */
+  }
+
+  #input-area {
+    flex-direction: column; /* ✅ Stack on smaller screens */
+    gap: 10px;
+  }
+
+  button {
+    width: 100%; /* ✅ Full width buttons on mobile */
+  }
 }
 
-/* Footer Links */
-footer a {
+/* Footer */
+.footer-text {
+  text-align: center;
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 50px; /* Adds space below chat section */
+  padding-bottom: 20px;
+}
+
+.footer-text a {
   color: #0A84FF;
   text-decoration: none;
-  font-weight: normal;
 }
 
-footer a:hover {
+.footer-text a:hover {
   text-decoration: underline;
-}
-
-/* ✅ Light Theme - Make Footer Text Darker */
-.light-theme footer {
-  color: #333; /* Darker text for visibility */
-}
-
-.light-theme footer a {
-  color: #0056b3; /* Darker blue for links */
-}
-
-
-/* Default Dark Theme */
-.dark-theme {
-  background-color: #1E1E1E;
-  color: white;
-}
-
-/* Light Theme */
-.light-theme {
-  background-color: white;
-  color: black;
-}
-
-/* ✅ Light Theme - Adjust Input & Buttons */
-.light-theme #input-area {
-  background: #f4f4f4;
-}
-
-.light-theme input {
-  background: white;
-  color: black;
-}
-
-.light-theme button {
-  background: #0073E6;
-  color: white;
-}
-
-.light-theme button:hover {
-  background: #005bb5;
-}
-
-/* Theme Button */
-#theme-toggle {
-  position: fixed;
-  bottom: 20px;
-  left: 20px;
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background: #444;
-  border: none;
-  cursor: pointer;
-  transition: background 0.3s ease;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 5px;
-}
-
-/* SVG Styling */
-#theme-toggle svg, #theme-toggle img {
-  width: 30px;
-  height: 30px;
-  filter: invert(1); /* Makes the icon white in dark mode */
-}
-
-/* ✅ Light Theme - Theme Icon Light Grey */
-.light-theme #theme-toggle {
-  background: #ddd;
-}
-
-.light-theme #theme-toggle svg, .light-theme #theme-toggle img {
-  filter: invert(0.6); /* Makes the icon light grey */
 }

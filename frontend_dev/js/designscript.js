@@ -8,29 +8,47 @@ async function sendMessage() {
   let userMessage = inputField.value.trim();
   let chatbox = document.getElementById("chatbox");
 
-  if (userMessage === "") return;
+  if (userMessage === "") return; // ✅ Prevent empty messages
 
-  // Display user message
+  // ✅ Display user message
   chatbox.innerHTML += `<div class="message user"><strong>You:</strong> ${userMessage}</div>`;
   inputField.value = "";
-  chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll down
+  chatbox.scrollTop = chatbox.scrollHeight;
 
-  // Send message to backend
-  let response = await fetch("/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userMessage }),
-  });
+  // ✅ Show "Typing..." while waiting for response
+  let typingIndicator = document.createElement("div");
+  typingIndicator.classList.add("message", "bot");
+  typingIndicator.innerHTML = "<strong>Bot:</strong> Typing...";
+  chatbox.appendChild(typingIndicator);
+  chatbox.scrollTop = chatbox.scrollHeight;
 
-  let data = await response.json();
+  try {
+      // ✅ Send message to Flask backend
+      let response = await fetch("/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: userMessage }),
+      });
 
-  // Display bot response
-  chatbox.innerHTML += `<div class="message bot">
-    <strong>Bot:</strong> ${formatMessage(data.response)}
-</div>`;
+      if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+      }
 
+      let data = await response.json();
+      chatbox.removeChild(typingIndicator); // ✅ Remove "Typing..."
 
-  chatbox.scrollTop = chatbox.scrollHeight; // Auto-scroll down
+      // ✅ Display bot response
+      chatbox.innerHTML += `<div class="message bot">
+        <strong>Bot:</strong> ${formatMessage(data.reply)}
+      </div>`;
+
+      chatbox.scrollTop = chatbox.scrollHeight;
+
+  } catch (error) {
+      chatbox.removeChild(typingIndicator);
+      chatbox.innerHTML += `<div class="message bot"><strong>Bot:</strong> Error: Failed to get a response.</div>`;
+      console.error("Chatbot error:", error);
+  }
 }
 
 // Function to handle "Enter" key press
@@ -44,16 +62,25 @@ function handleKeyPress(event) {
 async function loadChatHistory() {
   let chatbox = document.getElementById("chatbox");
 
-  let response = await fetch("/chat_history");
-  let history = await response.json();
+  try {
+      let response = await fetch("/chat_history");  // ✅ Fetch chat history from Flask
+      let history = await response.json();
 
-  history.forEach(msg => {
-      let roleClass = msg.role === "user" ? "user" : "bot";
-      chatbox.innerHTML += `<div class="message ${roleClass}"><strong>${msg.role}:</strong> ${msg.content}</div>`;
-  });
+      chatbox.innerHTML = "";  // ✅ Clear chatbox before loading history
 
-  chatbox.scrollTop = chatbox.scrollHeight;
+      history.forEach(msg => {
+          let roleClass = msg.role === "user" ? "user" : "bot";
+          chatbox.innerHTML += `<div class="message ${roleClass}">
+              <strong>${msg.role}:</strong> ${msg.content}
+          </div>`;
+      });
+
+      chatbox.scrollTop = chatbox.scrollHeight;  // ✅ Auto-scroll to latest message
+  } catch (error) {
+      console.error("Failed to load chat history:", error);
+  }
 }
+
 
 // Function to clear chat
 async function clearChat() {
@@ -65,52 +92,52 @@ async function clearChat() {
 
 // Function to format AI messages into structured HTML
 function formatMessage(text) {
-  // Convert new lines into <br> for better spacing
+  // ✅ Convert markdown-style bold (**text**) to HTML bold (<strong>text</strong>)
+  text = text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+  // ✅ Convert numbered lists into proper HTML lists
+  text = text.replace(/\n\d+\.\s/g, "<br>"); // Fixes numbering
+
+  // ✅ Convert bullet points ("- ") into `<ul><li>` lists
+  if (text.includes("- ")) {
+      let items = text.split("- ").filter(item => item.trim() !== "");
+      text = "<ul><li>" + items.join("</li><li>") + "</li></ul>";
+  }
+
+  // ✅ Convert new lines to `<br>` for spacing
   text = text.replace(/\n/g, "<br>");
-
-  // Convert **bold** text into <strong> tags
-  text = text.replace(/\*{2}([\s\S]+?)\*{2}/g, "<strong>$1</strong>");
-
-  // Convert lists (* item) into proper <ul><li> lists
-  text = text.replace(/\* (.*?)\n/g, "<li>$1</li>");
-  text = text.replace(/(<li>.*?<\/li>)+/g, "<ul>$&</ul>");
 
   return text;
 }
 
 
+// Load chat history when the page loads
 document.addEventListener("DOMContentLoaded", function () {
-  loadTheme();
+  loadChatHistory();
 });
 
-// List of available themes
-const themes = ["dark-theme", "light-theme"];
-let currentThemeIndex = 0;
+async function loadChatHistory() {
+  let chatbox = document.getElementById("chatbox");
 
-// Function to toggle theme
-function toggleTheme() {
-  let body = document.body;
+  try {
+      let response = await fetch("/chat_history");  // Fetch previous messages
+      let history = await response.json();
 
-  // Remove the current theme
-  body.classList.remove(...themes);
+      history.forEach(msg => {
+          let roleClass = msg.role === "user" ? "user" : "bot";
+          chatbox.innerHTML += `<div class="message ${roleClass}">
+              <strong>${msg.role}:</strong> ${msg.content}
+          </div>`;
+      });
 
-  // Select the next theme in the list
-  currentThemeIndex = (currentThemeIndex + 1) % themes.length;
-  let newTheme = themes[currentThemeIndex];
-
-  // Apply the new theme
-  body.classList.add(newTheme);
-
-  // Save the selected theme in localStorage
-  localStorage.setItem("theme", newTheme);
-}
-
-// Function to load the saved theme on page load
-function loadTheme() {
-  let savedTheme = localStorage.getItem("theme");
-  if (savedTheme && themes.includes(savedTheme)) {
-      document.body.classList.add(savedTheme);
-      currentThemeIndex = themes.indexOf(savedTheme);
+      chatbox.scrollTop = chatbox.scrollHeight;  // Auto-scroll to the latest message
+  } catch (error) {
+      console.error("Failed to load chat history:", error);
   }
 }
 
+
+function scrollToChat() {
+  let chatSection = document.getElementById("chat-container");
+  chatSection.scrollIntoView({ behavior: "smooth" });
+}
