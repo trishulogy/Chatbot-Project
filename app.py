@@ -35,27 +35,29 @@ def save_message(role, content):
 load_chat_history()
 
 def generate_response():
-    """Generate a response using Gemini AI with the correct format"""
+    """Generate a response using Gemini AI with full conversation history"""
     try:
         model = genai.GenerativeModel("gemini-1.5-flash")
 
-        # ✅ Convert messages into correct format (Remove 'system' role)
+        # ✅ Format messages correctly for Gemini API
         formatted_messages = []
         for msg in messages:
-            if msg["role"] in ["user", "assistant"]:  # Ignore 'system'
+            if msg["role"] in ["user", "assistant"]:  # Only keep valid roles
                 formatted_messages.append({
                     "role": msg["role"],
                     "parts": [{"text": msg["content"]}]
                 })
 
+        # ✅ Generate AI response
         response = model.generate_content(formatted_messages, generation_config=genai.GenerationConfig(
-            max_output_tokens=500,  # Increased token limit to prevent cut-off responses
+            max_output_tokens=500,
             temperature=0.1,
         ))
 
-        return response.text  # ✅ Extract AI response properly
+        return response.text  # ✅ Correctly return AI response
     except Exception as e:
         return f"Error: {e}"
+
 
 @app.route('/')
 def home():
@@ -63,32 +65,30 @@ def home():
 
 @app.route('/chat', methods=['POST'])
 def chat():
+    """Handles user input, generates a response, and stores chat history"""
     data = request.json
     user_query = data.get("message", "").strip()
 
     if not user_query:
         return jsonify({"reply": "Please enter a message."})
 
-    # Add user message to conversation history
+    # ✅ Store user message
     messages.append({"role": "user", "content": user_query})
     save_message("user", user_query)
 
-    # Generate bot response
+    # ✅ Generate AI response
     bot_response = generate_response()
-    print("AI Response:", bot_response)  # ✅ Debugging output
 
-    # Add bot response to conversation history
+    # ✅ Store bot response
     messages.append({"role": "assistant", "content": bot_response})
     save_message("assistant", bot_response)
 
-    # ✅ Keep only the last 10 messages in memory (excluding system prompt)
+    # ✅ Keep only the last 10 messages in memory
     if len(messages) > 20:
-        messages.pop(1)
-
-    # ✅ Trim CSV file to keep only the last 10 conversations
-    trim_csv_history()
+        messages.pop(1)  # Remove oldest message (except system prompt)
 
     return jsonify({"reply": bot_response})
+
 
 # ✅ Function to trim chat history in CSV file
 def trim_csv_history():
@@ -104,8 +104,9 @@ def trim_csv_history():
 # ✅ New Route: Fetch Chat History for the Frontend
 @app.route('/chat_history', methods=['GET'])
 def get_chat_history():
-    """Returns chat history as JSON for the frontend"""
+    """Returns chat history as JSON for the frontend."""
     chat_history = []
+    
     if os.path.exists(CHAT_HISTORY_FILE):
         with open(CHAT_HISTORY_FILE, "r", newline="", encoding="utf-8") as file:
             reader = csv.reader(file)
@@ -114,6 +115,7 @@ def get_chat_history():
                     chat_history.append({"role": row[0], "content": row[1]})
 
     return jsonify(chat_history)
+
 
 @app.route('/clear_chat', methods=['POST'])
 def clear_chat():
