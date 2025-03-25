@@ -135,3 +135,9 @@ async function loadChatHistory() {
       console.error("Failed to load chat history:", error);
   }
 }
+
+
+function scrollToChat() {
+  let chatSection = document.getElementById("chat-container");
+  chatSection.scrollIntoView({ behavior: "smooth" });
+}

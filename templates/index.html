@@ -13,21 +13,32 @@
 </head>
 <body>
 
-    <!-- Chat Container -->
-    <div id="chat-container">
-        <div id="chatbox"></div>
-        <div id="input-area">
-            <input type="text" id="userInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
-            <button onclick="sendMessage()">Send</button>
-            <button onclick="clearChat()">Clear Chat</button>
+    <section id="info-section">
+        <h1>Welcome to the AI Chatbot</h1>
+        <p>
+            This chatbot is designed to provide intelligent responses to your questions. 
+            It remembers previous conversations and improves user interactions over time.
+            Scroll down to start chatting.
+        </p>
+    </section>
+    
+    <!-- Chat Section -->
+    <section id="chat-section">
+        <div id="chat-container">
+            <div id="chatbox"></div>
+            <div id="input-area">
+                <input type="text" id="userInput" placeholder="Type a message..." onkeypress="handleKeyPress(event)">
+                <button onclick="sendMessage()">Send</button>
+                <button onclick="clearChat()">Clear Chat</button>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Footer with Credits -->
-    <footer>
-        <p>Created by <a href="https://github.com/trishulogy" target="_blank">Tejashween</a> 
-        and <a href="https://github.com/amish297592" target="_blank">Amish</a></p>
-    </footer>
+    <!-- ✅ Credits Below Everything -->
+    <p class="footer-text">
+        Created by <a href="https://github.com/trishulogy" target="_blank">Tejashween</a> 
+        and <a href="https://github.com/amish297592" target="_blank">Amish</a>
+    </p>
 
 </body>
 </html>
